@@ -13,7 +13,10 @@ class BufferManager:
 
     def __fill_buffer(self):
         for request in self.__requests:
-            self.__buffer.add_request(request)
+            if self.__buffer.is_full() is False:
+                self.__buffer.add_request(request)
+            else:
+                request.deny_buffer()
         self.__requests = []
 
     def work(self):
