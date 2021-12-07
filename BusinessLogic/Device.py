@@ -1,7 +1,7 @@
 from math import exp
 from random import random
 import config
-from Time import *
+from BusinessLogic.Time import *
 
 class Device:
     def __init__(self, num):

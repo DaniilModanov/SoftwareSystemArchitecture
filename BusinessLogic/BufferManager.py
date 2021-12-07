@@ -1,4 +1,4 @@
-from Buffer import Buffer
+from BusinessLogic.Buffer import *
 class BufferManager:
     def __init__(self, buffer, sources):
         self.__requests = []

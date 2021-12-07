@@ -1,10 +1,10 @@
 import config
-from Request import *
+
+
 class Buffer:
     def __init__(self, buffer_length):
         self.__buffer_length = buffer_length
         self.__buffer = [None] * self.__buffer_length
-
 
     def add_request(self, request):
         added = False
