@@ -1,4 +1,5 @@
 from BusinessLogic.Buffer import *
+
 class BufferManager:
     def __init__(self, buffer, sources):
         self.__requests = []
@@ -12,13 +13,19 @@ class BufferManager:
                 self.__requests.append(request)
 
     def __fill_buffer(self):
+        denied_request = None
         for request in self.__requests:
             if self.__buffer.is_full() is False:
                 self.__buffer.add_request(request)
             else:
                 request.deny_buffer()
+                denied_request = request
         self.__requests = []
+        return denied_request
 
     def work(self):
         self.__collect_requests()
-        self.__fill_buffer()
+        denied_request = self.__fill_buffer()
+        return denied_request
+        # for r in denied_requests:
+        #     print(r.get_id())

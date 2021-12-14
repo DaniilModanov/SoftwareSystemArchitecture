@@ -80,7 +80,7 @@ class StepModeWindow:
             self.lst_SV2[i][0].set("Device " + str(i))
         self.__fill_workers()
 
-        down = max(config.buffer_length, config.num_of_devices) + 2
+        down = max(config.buffer_length, config.num_of_devices) + 3
 
         tk.Button(self.window, text="Step", command=self.__one_step).grid(row=down, column=0, padx=5, pady=5)
         tk.Button(self.window, text="10 Steps", command=self.__ten_steps).grid(row=down, column=1, padx=5, pady=5)
@@ -97,6 +97,12 @@ class StepModeWindow:
         self.__step2.set(0)
         e0.grid(row=down, column=5)
 
+        tk.Label(self.window, text="Declined:").grid(row=down - 1, column=0)
+        self.__declined = tk.StringVar()
+        e0 = tk.Entry(self.window, textvariable=self.__declined, state='readonly')
+        self.__declined.set(None)
+        e0.grid(row=down-1, column=1)
+
     def __fill_buffer(self):
         for i in range(config.buffer_length):
             v = self.buffer._Buffer__buffer[i]
@@ -104,6 +110,7 @@ class StepModeWindow:
                 self.lst_SV[i][1].set("None")
             else:
                 self.lst_SV[i][1].set(v.get_id())
+
 
 
     def __fill_workers(self):
@@ -121,6 +128,12 @@ class StepModeWindow:
         self.__time.set('{:.3f}'.format(Time.get_current_time()))
         self.__step2.set(Time.get_current_step())
 
+    def __fill_declined_request(self, r):
+        if r is not None:
+            self.__declined.set(r.get_id())
+        else:
+            self.__declined.set(None)
+
     def __ten_steps(self):
         for i in range(10):
             self.__step()
@@ -130,6 +143,7 @@ class StepModeWindow:
         self.__step2.set(Time.get_current_step())
 
     def __step(self):
-        self.BufferManager.work()
+        denied_request = self.BufferManager.work() #вот отсюда брать
+        self.__fill_declined_request(denied_request)
         self.DeviceManager.work()
         Time.step()

@@ -1,3 +1,4 @@
+from collections import defaultdict
 import config
 
 
@@ -11,6 +12,11 @@ class StatCollector:
         self.sources_all_time = [0] * config.num_of_sources
         self.sources_work_time = [0] * config.num_of_sources
         self.workers_last_request_time = [0] * config.num_of_devices
+
+        self.sources_work_time_each_request = defaultdict(list)
+
+        self.sources_wait_time_each_request = defaultdict(list)
+
 
     def created(self, i):
         self.sources_created[i] += 1
@@ -29,9 +35,11 @@ class StatCollector:
 
     def add_wait_time(self, num, time):
         self.sources_wait_time[num] += time
+        self.sources_wait_time_each_request[num].append(time)
 
     def add_all_time(self, num, time):
         self.sources_all_time[num] += time
 
     def add_work_time(self, num, time):
         self.sources_work_time[num] += time
+        self.sources_work_time_each_request[num].append(time)

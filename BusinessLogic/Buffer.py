@@ -23,6 +23,7 @@ class Buffer:
 
     def deny_request(self, request):
         request.deny_buffer()
+        return request
 
     def is_full(self):
         if None in self.__buffer:

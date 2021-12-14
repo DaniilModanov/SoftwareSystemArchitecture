@@ -1,4 +1,5 @@
 import tkinter as tk
+import statistics as stat
 from BusinessLogic import StatCollector
 from BusinessLogic.Buffer import *
 from BusinessLogic.BufferManager import *
@@ -57,50 +58,80 @@ class AutomaticModeWindow:
         e0.grid(row=1, column=4)
         v0 = tk.StringVar()
         e0 = tk.Entry(self.window, textvariable=v0, state='readonly')
-        v0.set('Ср. время ожидания')
+        v0.set('Ср. время ожидания ')
         e0.grid(row=1, column=5)
         v0 = tk.StringVar()
         e0 = tk.Entry(self.window, textvariable=v0, state='readonly')
         v0.set('Ср. время обработки')
         e0.grid(row=1, column=6)
+
+        v0 = tk.StringVar()
+        e0 = tk.Entry(self.window, textvariable=v0, state='readonly')
+        v0.set('Дисперсия ожидания')
+        e0.grid(row=1, column=7)
+
+        v0 = tk.StringVar()
+        e0 = tk.Entry(self.window, textvariable=v0, state='readonly')
+        v0.set('Дисперсия обработки')
+        e0.grid(row=1, column=8)
+
         v0 = tk.StringVar()
         e0 = tk.Entry(self.window, textvariable=v0, state='readonly')
         v0.set('Вероятность отказа')
-        e0.grid(row=1, column=7)
+        e0.grid(row=1, column=9)
 
         for i in range(2, 2+config.num_of_sources):
             v0 = tk.StringVar()
             e0 = tk.Entry(self.window, textvariable=v0, state='readonly')
             v0.set("Source " + str(i-2))
             e0.grid(row=i, column=0)
+
             v0 = tk.StringVar()
             e0 = tk.Entry(self.window, textvariable=v0, state='readonly')
             v0.set(self.stat.sources_created[i-2])
             e0.grid(row=i, column=1)
+
             v0 = tk.StringVar()
             e0 = tk.Entry(self.window, textvariable=v0, state='readonly')
             v0.set(self.stat.sources_completed[i-2])
             e0.grid(row=i, column=2)
+
             v0 = tk.StringVar()
             e0 = tk.Entry(self.window, textvariable=v0, state='readonly')
             v0.set(self.stat.sources_denied[i - 2])
             e0.grid(row=i, column=3)
+
             v0 = tk.StringVar()
             e0 = tk.Entry(self.window, textvariable=v0, state='readonly')
             v0.set(str(self.stat.sources_all_time[i - 2]/self.stat.sources_completed[i-2])[0:4])
             e0.grid(row=i, column=4)
+
             v0 = tk.StringVar()
             e0 = tk.Entry(self.window, textvariable=v0, state='readonly')
-            v0.set(str(self.stat.sources_wait_time[i-2]/(self.stat.sources_completed[i-2]+self.stat.sources_denied[i-2]))[0:4])
+            avg_wait = self.stat.sources_wait_time[i-2]/(self.stat.sources_completed[i-2]+self.stat.sources_denied[i-2])
+            v0.set(str(avg_wait)[0:4])
             e0.grid(row=i, column=5)
+
             v0 = tk.StringVar()
             e0 = tk.Entry(self.window, textvariable=v0, state='readonly')
-            v0.set(str(self.stat.sources_work_time[i-2]/self.stat.sources_completed[i-2])[0:4])
+            avg_work = self.stat.sources_work_time[i-2]/self.stat.sources_completed[i-2]
+            v0.set(str(avg_work)[0:4])
             e0.grid(row=i, column=6)
+
+            v0 = tk.StringVar()
+            e0 = tk.Entry(self.window, textvariable=v0, state='readonly')
+            v0.set(str(stat.pvariance(self.stat.sources_wait_time_each_request[i-2], avg_wait))[0:4])
+            e0.grid(row=i, column=7)
+
+            v0 = tk.StringVar()
+            e0 = tk.Entry(self.window, textvariable=v0, state='readonly')
+            v0.set(str(stat.pvariance(self.stat.sources_work_time_each_request[i-2], avg_work))[0:4])
+            e0.grid(row=i, column=8)
+
             v0 = tk.StringVar()
             e0 = tk.Entry(self.window, textvariable=v0, state='readonly')
             v0.set(str(self.stat.sources_denied[i - 2] / self.stat.sources_created[i - 2] * 100)[0:4] + "%")
-            e0.grid(row=i, column=7)
+            e0.grid(row=i, column=9)
 
         tk.Label(self.window, text="Devices").grid(row=2+config.num_of_sources, column=0)
 
